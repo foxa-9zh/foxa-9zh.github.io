@@ -1,2 +1,338 @@
 # foxa-9zh.github.io
-a solar system map with planets - site
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивна Слънчева Система</title>
+    <link rel="icon" type="image/webp" href="Planet_10.webp">
+    <style>
+        /* Основен космически фон */
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle, #11152c 0%, #050710 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Контейнер за слънчевата система */
+        .galaxy {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Слънцето в центъра */
+        .sun {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #ffea00 0%, #ff6a00 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ffaa00;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Общ стил за всички орбити */
+        .orbit {
+            position: absolute;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: spin linear infinite;
+            pointer-events: none;          
+        }
+
+        /* Общ стил за всички планети */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            z-index: 20;
+            pointer-events: auto;
+            
+        }
+
+        .planet:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Специфични размери и скорости за Меркурий */
+         .mercury-orbit
+        {
+            width : 150px;
+            height: 150px;
+            animation-duration: 8s;
+        }
+        .mercury{
+
+            top: -5px;
+            height: 10px;
+            width: 10px;
+            background: radial-gradient(circle, #616161, #2c2c2c);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+            z-index: 20;
+
+        }
+        /* Специфични размери и скорости за Венера */
+        .venus-orbit{
+            width: 250px;
+            height: 250px;
+            animation-duration: 12s;
+        }
+        .venus{
+            top: -5px;
+            height: 15px;
+            width: 15px;
+            background:  radial-gradient(circle, #eeaa43, #f79f1bc3);
+            box-shadow: 0 0 8px rgba(251, 176, 72, 0.572);
+            z-index: 20;
+        }
+        /* Орбита и размери на Земята */
+        .earth-orbit {
+            width: 350px;
+            height: 350px;
+            animation-duration: 16s; /* Скорост на въртене */
+        }
+        .earth {
+            top: -15px; /* Позициониране върху линията на орбитата */
+            width: 24px;
+            height: 24px;
+            background: radial-gradient(circle, #377d2e, #0044ff);
+            box-shadow: 0 0 8px rgba(40, 131, 49, 0.5);
+            z-index: 20;
+        }
+        /* Орбита и размери на Марс */
+        .mars-orbit {
+            width: 450px;
+            height: 450px;
+            animation-duration: 24s; /* Марс се върти по-бавно */
+        }
+        .mars {
+            top: -15px;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #791717, #c0392b);
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+            z-index: 20;
+        }
+        /* Юпитер*/
+        .jupiter-orbit {
+            width: 550px;
+            height: 550px;
+            animation-duration: 40s; /* Юпитер се върти още по-бавно */
+        }
+        .jupiter {
+            top: -22px;
+            width: 45px;
+            height: 45px;
+            background: radial-gradient(circle, #a1e7de, #b3a061);
+            box-shadow: 0 0 12px rgba(241, 196, 15, 0.5);
+        }
+        /* Сатурн */
+        .saturn-orbit {
+            width: 650px;
+            height: 650px;
+            animation-duration: 60s;
+        }
+        .saturn {
+            top: -20px;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #c2a07a, #705d42);
+            box-shadow: 0 0 12px rgba(71, 34, 5, 0.5);
+        }
+        .uranus-orbit {
+            width: 750px;
+            height: 750px;
+            animation-duration: 90s;
+        }
+        .uranus {
+            top: -18px;
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #7fffd4, #b5faff);
+            box-shadow: 0 0 12px rgba(127, 255, 212, 0.5);
+        }
+        .neptune-orbit {
+            width: 850px;
+            height: 850px;
+            animation-duration: 135s;
+        }
+        .neptune {
+            top: -18px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #4169e1, #000080);
+            box-shadow: 0 0 12px rgba(65, 105, 225, 0.5);
+        }
+
+
+        /* Анимация за въртене на 360 градуса */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Информационно табло*/
+        .info-panel {
+            position: absolute;
+            bottom: 100px;
+            right: 100px;
+            background: rgba(5, 7, 16, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 320px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .info-panel h2 {
+            margin-top: 0;
+            color: #00bfff;
+        }
+        .info-panel2{
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            background: rgba(5, 7, 16, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 320px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .info-panel2 h2{
+            margin-top: 0;
+            color: #00bfff;
+        }
+        
+        
+    </style>
+</head>
+<body>
+
+    <!-- Слънчева система -->  
+    <div class="galaxy">
+        <!-- Слънце -->
+        <div 
+        class="sun" 
+        data-name="Слънцето" 
+        data-info="Слънцето е звездата в центъра на Слънчевата система. Неговата гравитация и енергия поддържат живота на Земята и движението на планетите около него.">
+        </div>
+        <!-- Меркурий (орбита + Планета)-->
+        <div class = "orbit mercury-orbit">
+            <div 
+                class = "planet mercury" 
+                data-name = "Меркурий" 
+                data-info = "Меркурий е най-малката и най-близката до Слънцето планета. Той няма почти никаква атмосфера, което води до огромни температурни разлики между деня и нощта.">
+            </div>
+        </div> 
+        <!-- Венера -->
+        <div class = "orbit venus-orbit">
+            <div 
+                class = "planet venus" 
+                data-name = "Венера" 
+                data-info = 'Венера е втората планета от Слънцето и е най-горещата в Слънчевата система. Гъстата ѝ атмосфера задържа топлината чрез силен парников ефект, което прави повърхността ѝ изключително враждебна за живот.'>
+            </div>
+        </div>
+        <!-- Земя (Орбита + Планета) -->
+        <div class="orbit earth-orbit">
+            <div 
+             class="planet earth" 
+                data-name="Земя" 
+                data-info="Земята е третата планета от Слънцето и единствената известна планета, на която съществува живот. Около 71% от повърхността ѝ е покрита с вода.">
+            </div>
+        </div>
+        <!-- Марс (Орбита + Планета) -->
+        <div class="orbit mars-orbit">
+            <div 
+                class="planet mars" 
+                data-name="Марс" 
+                data-info="Марс е известен като Червената планета заради богатата на желязо почва. Учените го изследват активно за следи от минал живот.">
+            </div>
+        </div>
+        <!-- Юпитер -->
+        <div class = "orbit jupiter-orbit">
+            <div 
+                class = "planet jupiter" 
+                data-name = "Юпитер" 
+                data-info = "Юпитер е най-голямата планета в Слънчевата система. Той е газов гигант и е известен с Голямото червено петно – гигантска буря, която бушува от векове.">
+            </div>
+        </div>
+        <!-- Сатурн -->
+        <div class = "orbit saturn-orbit">
+            <div 
+                class = "planet saturn" 
+                data-name = "Сатурн" 
+                data-info = "Сатурн е втората по големина планета и е известен със своите впечатляващи пръстени. Те са изградени предимно от лед и скални частици. Сатурн има множество спътници, като най-големият от тях е Титан.">
+            </div>
+        </div>
+        <!-- Уран -->
+        <div class = "orbit uranus-orbit">
+            <div 
+                class = "planet uranus" 
+                data-name = "Уран" 
+                data-info = "Уран е леден гигант със синьо-зелен цвят, причинен от метана в атмосферата му. Той се върти почти легнал настрани спрямо орбитата си. Уран има 27 известни спътника и 13 пръстена.">
+            </div>
+        </div>
+        <!-- Нептун -->
+        <div class = "orbit neptune-orbit">
+            <div 
+                class = "planet neptune" 
+                data-name = "Нептун" 
+                data-info = "Нептун е най-далечната планета от Слънцето. Той е известен с изключително силните си ветрове, които са сред най-бързите в Слънчевата система. Нептун има 14 известни спътника, като най-големият от тях е Тритон.">
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Информационно табло -->
+    <div class="info-panel">
+        <h2 id="planet-name">Слънчева система</h2>
+        <p id="planet-details">Кликнете върху Слънцето или планетите, за да научите любопитни факти за тях.</p>
+    </div>
+    <div class="info-panel2">
+        <h2 id="welcome-message">Добре дошли в Слънчевата система!</h2>
+        <p id = "planets-info">Тук можете да разгледате нашата слънчева система и да научите интересни факти за всяка планета. Кликнете върху някоя от тях, за да видите повече информация.</p>
+    </div>
+
+    <!-- JavaScript код за интерактивност -->
+    <script>
+        // Селектираме всички обекти (планети и слънце) и полетата за текст
+        const spaceObjects = document.querySelectorAll('.planet, .sun');
+        const nameField = document.getElementById('planet-name');
+        const detailsField = document.getElementById('planet-details');
+
+        // Добавяме събитие при клик за всеки обект
+        spaceObjects.forEach(object => {
+            object.addEventListener('click', (event) => {
+                // Взимаме данните от атрибутите на кликнатия елемент
+                const name = event.target.getAttribute('data-name');
+                const info = event.target.getAttribute('data-info');
+
+                // Променяме текста в информационното табло
+                nameField.innerText = name;
+                detailsField.innerText = info;
+            });
+        });
+    </script>
+
+</body>
+</html>
